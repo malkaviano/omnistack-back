@@ -19,11 +19,33 @@ module.exports = {
         const ong_id = request.headers.authorization;
         const { page = 1 } = request.query;
 
-        const [count] = await connection('incidents').count();
+        const [count] = await connection('incidents').where({ ong_id }).count();
 
         const incidents = await connection('incidents')
             .innerJoin('ongs', 'incidents.ong_id', 'ongs.id')
             .where({ ong_id })
+            .limit(5)
+            .offset(5 * (page - 1))
+            .select([
+                'incidents.*',
+                'ongs.name',
+                'ongs.email',
+                'ongs.whatsapp',
+                'ongs.city',
+                'ongs.uf'
+            ]);
+
+        response.header('X-Total-Count', Object.values(count).pop());
+
+        return response.json(incidents);
+    },
+    async available(request, response) {
+        const { page = 1 } = request.query;
+
+        const [count] = await connection('incidents').count();
+
+        const incidents = await connection('incidents')
+            .innerJoin('ongs', 'incidents.ong_id', 'ongs.id')
             .limit(5)
             .offset(5 * (page - 1))
             .select([

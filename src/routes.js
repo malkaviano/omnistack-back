@@ -9,6 +9,7 @@ routes.get('/ongs', ongController.list);
 routes.post('/ongs', ongController.create);
 
 routes.get('/incidents', incidentsController.list);
+routes.get('/incidents/available', incidentsController.available);
 routes.post('/incidents', incidentsController.create);
 routes.delete('/incidents/:id', incidentsController.delete);
 
